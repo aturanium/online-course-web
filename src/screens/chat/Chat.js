@@ -38,7 +38,16 @@ const Chat = () => {
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+    if (!user || !user.id) return;
+    const updateRef = ref(db, `chat_updates/${user.id}`);
+    const unsubscribe = onValue(updateRef, (snapshot) => {
+      if (snapshot.exists()) {
+        fetchRooms();
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const handleCreateChat = async (targetUser) => {
     try {
@@ -110,10 +119,18 @@ const Chat = () => {
       const unsubscribe = onValue(messagesRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          const loadedMessages = Object.keys(data).map((key) => ({
+          let loadedMessages = Object.keys(data).map((key) => ({
             id: key,
             ...data[key],
           }));
+
+          if (activeRoom.clearedAt) {
+            const clearTimestamp = new Date(activeRoom.clearedAt).getTime();
+            loadedMessages = loadedMessages.filter(
+              (m) => m.timestamp >= clearTimestamp,
+            );
+          }
+
           loadedMessages.sort((a, b) => a.timestamp - b.timestamp);
           setMessages(loadedMessages);
         } else {

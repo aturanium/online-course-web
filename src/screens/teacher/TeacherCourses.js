@@ -190,6 +190,7 @@ const TeacherCourses = () => {
                 <th className="py-3">Tên khóa học</th>
                 <th className="py-3">Giá</th>
                 <th className="py-3">Thời lượng</th>
+                <th className="py-3">Doanh thu</th>
                 <th className="py-3">Trạng thái</th>
                 <th className="py-3 text-end pe-4">Thao tác</th>
               </tr>
@@ -197,7 +198,7 @@ const TeacherCourses = () => {
             <tbody>
               {courses.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-5 text-muted">
+                  <td colSpan="7" className="text-center py-5 text-muted">
                     Bạn chưa tạo khóa học nào.
                   </td>
                 </tr>
@@ -218,9 +219,15 @@ const TeacherCourses = () => {
                     </td>
                     <td className="fw-medium">{c.name}</td>
                     <td className="text-danger fw-bold">
-                      {c.price?.toLocaleString()}
+                      {c.price?.toLocaleString()} VNĐ
                     </td>
                     <td>{c.duration} giờ</td>
+
+                    <td className="text-success fw-bold">
+                      {c.totalRevenue ? c.totalRevenue.toLocaleString() : "0"}{" "}
+                      VNĐ
+                    </td>
+
                     <td>
                       <Badge bg={c.status === "ACTIVE" ? "success" : "warning"}>
                         {c.status}

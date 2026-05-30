@@ -29,13 +29,49 @@ const MyCourses = () => {
         ]);
 
         const myCoursesData = myRes.data;
+        const allCoursesData = allRes.data;
         setCourses(myCoursesData);
-
         const myCourseIds = myCoursesData.map((c) => c.id);
-        const suggested = allRes.data.filter(
+        const availableCourses = allCoursesData.filter(
           (c) => c.status === "ACTIVE" && !myCourseIds.includes(c.id),
         );
-        setSuggestedCourses(suggested.slice(0, 4));
+
+        let finalSuggestions = [];
+
+        if (myCourseIds.length === 0) {
+          finalSuggestions = availableCourses;
+        } else {
+          const ownedFullDetails = allCoursesData.filter((c) =>
+            myCourseIds.includes(c.id),
+          );
+          const ownedCategories = new Set(
+            ownedFullDetails.map((c) => c.categoryId),
+          );
+          const ownedTeachers = new Set(
+            ownedFullDetails.map((c) => c.teacherName),
+          );
+          const ownedDurations = new Set(
+            ownedFullDetails.map((c) => c.duration),
+          );
+          const ownedPrices = new Set(ownedFullDetails.map((c) => c.price));
+
+          availableCourses.forEach((c) => {
+            let score = 0;
+            if (ownedCategories.has(c.categoryId)) score += 1;
+            if (ownedTeachers.has(c.teacherName)) score += 1;
+            if (ownedDurations.has(c.duration)) score += 1;
+            if (ownedPrices.has(c.price)) score += 1;
+
+            c.matchScore = score;
+          });
+
+          let matchedCourses = availableCourses.filter((c) => c.matchScore > 0);
+          matchedCourses.sort((a, b) => b.matchScore - a.matchScore);
+          finalSuggestions =
+            matchedCourses.length > 0 ? matchedCourses : availableCourses;
+        }
+
+        setSuggestedCourses(finalSuggestions.slice(0, 4));
       } catch (error) {
         console.error("Lỗi lấy danh sách khóa học của tôi:", error);
         Swal.fire("Lỗi", "Không thể tải danh sách khóa học", "error");

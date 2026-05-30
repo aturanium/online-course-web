@@ -26,6 +26,7 @@ const TeacherCourseDetail = () => {
 
   const [course, setCourse] = useState(null);
   const [stats, setStats] = useState({ totalStudents: 0, totalRevenue: 0 });
+  const [revenueFilter, setRevenueFilter] = useState("MONTH");
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -172,7 +173,7 @@ const TeacherCourseDetail = () => {
               </h4>
             </div>
 
-            <Row className="text-center bg-light rounded p-3 mt-3">
+            <Row className="text-center bg-light rounded p-3 mt-3 shadow-sm">
               <Col>
                 <div className="small text-muted">Tổng sinh viên</div>
                 <div className="fs-4 fw-bold text-primary">
@@ -180,12 +181,80 @@ const TeacherCourseDetail = () => {
                 </div>
               </Col>
               <Col className="border-start">
-                <div className="small text-muted">Tổng doanh thu</div>
+                <div className="small text-muted">
+                  Tổng doanh thu toàn thời gian
+                </div>
                 <div className="fs-4 fw-bold text-success">
                   {stats.totalRevenue?.toLocaleString()} VNĐ
                 </div>
               </Col>
             </Row>
+
+            <div className="mt-4 border rounded p-3 bg-white">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="fw-bold mb-0 text-secondary">
+                  <i className="fa-solid fa-chart-line me-2"></i> Phân tích
+                  doanh thu
+                </h6>
+                <Form.Select
+                  size="sm"
+                  style={{ width: "150px" }}
+                  value={revenueFilter}
+                  onChange={(e) => setRevenueFilter(e.target.value)}
+                >
+                  <option value="MONTH">Theo Tháng</option>
+                  <option value="QUARTER">Theo Quý</option>
+                  <option value="YEAR">Theo Năm</option>
+                </Form.Select>
+              </div>
+
+              <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+                <Table size="sm" hover className="mb-0">
+                  <thead className="table-light sticky-top">
+                    <tr>
+                      <th>Thời gian</th>
+                      <th className="text-end">Doanh thu (VNĐ)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats &&
+                    stats[
+                      revenueFilter === "MONTH"
+                        ? "revenueByMonth"
+                        : revenueFilter === "QUARTER"
+                          ? "revenueByQuarter"
+                          : "revenueByYear"
+                    ] ? (
+                      Object.entries(
+                        stats[
+                          revenueFilter === "MONTH"
+                            ? "revenueByMonth"
+                            : revenueFilter === "QUARTER"
+                              ? "revenueByQuarter"
+                              : "revenueByYear"
+                        ],
+                      ).map(([key, value]) => (
+                        <tr key={key}>
+                          <td className="fw-medium">{key}</td>
+                          <td className="text-end text-success fw-bold">
+                            {value.toLocaleString()} VNĐ
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="2"
+                          className="text-center text-muted small py-2"
+                        >
+                          Chưa có dữ liệu
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
           </Col>
         </Row>
       </Card>

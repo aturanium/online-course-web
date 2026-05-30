@@ -28,6 +28,7 @@ const AdminCourses = () => {
 
   const [showCatModal, setShowCatModal] = useState(false);
   const [categoryName, setCategoryName] = useState("");
+  const [editingCatId, setEditingCatId] = useState(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -101,21 +102,42 @@ const AdminCourses = () => {
     }
   };
 
-  const handleAddCategory = async (e) => {
+  const handleSubmitCategory = async (e) => {
     e.preventDefault();
     try {
-      await authApi().post(endpoints["categories"], { name: categoryName });
-      Swal.fire("Thành công", "Đã thêm chủ đề mới!", "success");
+      if (editingCatId) {
+        await authApi().put(endpoints["categoryAction"](editingCatId), {
+          name: categoryName,
+        });
+        Swal.fire("Thành công", "Đã cập nhật chủ đề!", "success");
+      } else {
+        await authApi().post(endpoints["categories"], { name: categoryName });
+        Swal.fire("Thành công", "Đã thêm chủ đề mới!", "success");
+      }
+
       setShowCatModal(false);
       setCategoryName("");
+      setEditingCatId(null);
       fetchData();
     } catch (error) {
       Swal.fire(
         "Lỗi",
-        error.response?.data || "Không thể thêm chủ đề lúc này",
+        error.response?.data || "Không thể lưu chủ đề lúc này",
         "error",
       );
     }
+  };
+
+  const openAddModal = () => {
+    setEditingCatId(null);
+    setCategoryName("");
+    setShowCatModal(true);
+  };
+
+  const openEditModal = (cat) => {
+    setEditingCatId(cat.id);
+    setCategoryName(cat.name);
+    setShowCatModal(true);
   };
 
   const handleDeleteCategory = async (id, name) => {
@@ -184,7 +206,6 @@ const AdminCourses = () => {
                   <Table hover className="mb-0 align-middle">
                     <thead className="table-light">
                       <tr>
-                        <th className="py-3 ps-4">ID</th>
                         <th className="py-3">Khóa học</th>
                         <th className="py-3">Giảng viên</th>
                         <th className="py-3">Trạng thái</th>
@@ -195,7 +216,7 @@ const AdminCourses = () => {
                       {courses.length === 0 ? (
                         <tr>
                           <td
-                            colSpan="5"
+                            colSpan="4"
                             className="text-center py-5 text-muted"
                           >
                             Hệ thống chưa có khóa học nào.
@@ -204,8 +225,7 @@ const AdminCourses = () => {
                       ) : (
                         courses.map((c) => (
                           <tr key={c.id}>
-                            <td className="ps-4 fw-bold text-muted">#{c.id}</td>
-                            <td>
+                            <td className="ps-4">
                               <div className="d-flex align-items-center">
                                 <img
                                   src={c.image}
@@ -287,10 +307,7 @@ const AdminCourses = () => {
               <Tab.Pane eventKey="categories" className="p-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <h5 className="fw-bold mb-0">Danh sách Chủ đề</h5>
-                  <Button
-                    variant="primary"
-                    onClick={() => setShowCatModal(true)}
-                  >
+                  <Button variant="primary" onClick={openAddModal}>
                     <i className="fa-solid fa-plus me-2"></i>Thêm chủ đề
                   </Button>
                 </div>
@@ -301,15 +318,25 @@ const AdminCourses = () => {
                       <Card className="border shadow-sm">
                         <Card.Body className="d-flex justify-content-between align-items-center p-3">
                           <span className="fw-bold fs-6">{cat.name}</span>
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() =>
-                              handleDeleteCategory(cat.id, cat.name)
-                            }
-                          >
-                            Xóa
-                          </Button>
+                          <div>
+                            <Button
+                              variant="outline-primary"
+                              size="sm"
+                              className="me-2"
+                              onClick={() => openEditModal(cat)}
+                            >
+                              Sửa
+                            </Button>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() =>
+                                handleDeleteCategory(cat.id, cat.name)
+                              }
+                            >
+                              Xóa
+                            </Button>
+                          </div>
                         </Card.Body>
                       </Card>
                     </Col>
@@ -322,9 +349,11 @@ const AdminCourses = () => {
       </Tab.Container>
 
       <Modal show={showCatModal} onHide={() => setShowCatModal(false)}>
-        <Form onSubmit={handleAddCategory}>
+        <Form onSubmit={handleSubmitCategory}>
           <Modal.Header closeButton>
-            <Modal.Title>Thêm chủ đề mới</Modal.Title>
+            <Modal.Title>
+              {editingCatId ? "Cập nhật chủ đề" : "Thêm chủ đề mới"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group>
@@ -340,11 +369,17 @@ const AdminCourses = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowCatModal(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowCatModal(false);
+                setEditingCatId(null);
+              }}
+            >
               Hủy
             </Button>
             <Button variant="primary" type="submit">
-              Lưu lại
+              {editingCatId ? "Cập nhật" : "Lưu lại"}
             </Button>
           </Modal.Footer>
         </Form>

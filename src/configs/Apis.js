@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SERVER_URL = "http://localhost:8080/online-course-api/api";
+const SERVER_URL = "http://localhost:8080";
 
 export const endpoints = {
   login: "/login",
