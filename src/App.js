@@ -22,6 +22,7 @@ import AdminUsers from "./screens/admin/AdminUsers";
 import AdminStatistic from "./screens/admin/AdminStatistic";
 import Admin from "./screens/admin/Admin";
 import Spinner from "./components/Spinner";
+import PaymentResult from "./screens/cart/PaymentResult";
 
 const getHomeRoute = (role) => {
   if (role === "ADMIN") return "/admin";
@@ -144,6 +145,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["STUDENT"]}>
                 <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/result"
+            element={
+              <ProtectedRoute allowedRoles={["STUDENT"]}>
+                <PaymentResult />
               </ProtectedRoute>
             }
           />

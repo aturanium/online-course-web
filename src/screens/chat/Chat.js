@@ -8,7 +8,6 @@ import {
   Button,
   ListGroup,
   Image,
-  Badge,
 } from "react-bootstrap";
 import { UserContext } from "../../configs/Context";
 import { authApi, endpoints } from "../../configs/Apis";
@@ -77,13 +76,13 @@ const Chat = () => {
 
   const handleDeleteRoom = async (roomId) => {
     const result = await Swal.fire({
-      title: "Xóa cuộc hội thoại?",
-      text: "Dữ liệu chat của bạn sẽ bị ẩn đi!",
+      title: "Xác nhận xóa?",
+      text: "Đoạn chat sẽ bị xóa!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Đồng ý xóa",
+      confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
     });
 
@@ -92,9 +91,9 @@ const Chat = () => {
         await authApi().delete(`/chat-room/${roomId}`);
         if (activeRoom?.roomId === roomId) setActiveRoom(null);
         fetchRooms();
-        Swal.fire("Đã xóa!", "Cuộc hội thoại đã được loại bỏ.", "success");
+        Swal.fire("Đã xóa!", "Đoạn chat đã bị xóa", "success");
       } catch (error) {
-        Swal.fire("Lỗi", "Không thể xóa phòng chat!", "error");
+        Swal.fire("Lỗi", "Không thể xóa đoạn chat!", "error");
       }
     }
   };
@@ -188,9 +187,7 @@ const Chat = () => {
               {searchResults.length > 0 && (
                 <div className="bg-light p-2 border-bottom">
                   <div className="px-2 mb-2">
-                    <Badge bg="secondary text-uppercase">
-                      Kết quả tìm kiếm
-                    </Badge>
+                    <span className="fw-bold">Kết quả tìm kiếm</span>
                   </div>
                   {searchResults.map((su, idx) => (
                     <div
@@ -352,7 +349,7 @@ const Chat = () => {
                 <div className="display-1 opacity-25 mb-3">
                   <i className="fa-solid fa-comments"></i>
                 </div>
-                <h5>Chọn một liên hệ để bắt đầu nhắn tin</h5>
+                <h5>Chọn một phòng chat để nhắn</h5>
               </div>
             )}
           </Card>

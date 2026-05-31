@@ -126,7 +126,7 @@ const TeacherCourses = () => {
         );
         Swal.fire(
           "Thành công",
-          "Đã cập nhật khóa học, vui lòng chờ Admin duyệt lại!",
+          "Đã cập nhật khóa học, chờ Admin duyệt!",
           "success",
         );
       } else {
@@ -135,14 +135,14 @@ const TeacherCourses = () => {
         });
         Swal.fire(
           "Thành công",
-          "Đã tạo khóa học mới, đang chờ duyệt!",
+          "Đã tạo khóa học mới, chờ Admin duyệt!",
           "success",
         );
       }
       setShowModal(false);
       fetchData();
     } catch (error) {
-      Swal.fire("Lỗi", "Có lỗi xảy ra khi lưu khóa học", "error");
+      Swal.fire("Lỗi", "Có lỗi xảy ra", "error");
     } finally {
       setSubmitting(false);
     }
@@ -150,8 +150,8 @@ const TeacherCourses = () => {
 
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
-      title: "Chắc chắn xóa?",
-      text: "Bạn không thể khôi phục sau khi xóa!",
+      title: "Xác nhận xóa?",
+      text: "Khóa học sẽ bị xóa vĩnh viễn!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -165,7 +165,7 @@ const TeacherCourses = () => {
         Swal.fire("Đã xóa", "Khóa học đã bị xóa.", "success");
         fetchData();
       } catch (error) {
-        Swal.fire("Lỗi", "Không thể xóa khóa học này", "error");
+        Swal.fire("Lỗi", "Không thể xóa khóa học", "error");
       }
     }
   };
@@ -175,7 +175,7 @@ const TeacherCourses = () => {
   return (
     <Container className="mt-4 mb-5">
       <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h2 className="fw-bold mb-0">Quản lý Khóa học</h2>
+        <h2 className="fw-bold mb-0">Quản lý khóa học</h2>
         <Button variant="primary" onClick={handleShowAdd}>
           Thêm khóa học
         </Button>
@@ -199,7 +199,7 @@ const TeacherCourses = () => {
               {courses.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="text-center py-5 text-muted">
-                    Bạn chưa tạo khóa học nào.
+                    Chưa có khóa học nào.
                   </td>
                 </tr>
               ) : (
@@ -240,7 +240,7 @@ const TeacherCourses = () => {
                         className="me-2 text-white"
                         onClick={() => navigate(`/teacher/courses/${c.id}`)}
                       >
-                        <i className="fa-solid fa-eye"></i> Xem
+                        Xem
                       </Button>
                       <Button
                         variant="warning"
@@ -248,7 +248,7 @@ const TeacherCourses = () => {
                         className="me-2 text-white"
                         onClick={() => handleShowEdit(c)}
                       >
-                        <i className="fa-solid fa-pen"></i> Sửa
+                        Sửa
                       </Button>
                       <Button
                         variant="danger"
@@ -292,7 +292,7 @@ const TeacherCourses = () => {
               <Row className="g-3">
                 <Col md={12}>
                   <Form.Group>
-                    <Form.Label>Tên khóa học</Form.Label>
+                    <Form.Label>Tên</Form.Label>
                     <Form.Control
                       type="text"
                       name="name"
@@ -412,10 +412,10 @@ const TeacherCourses = () => {
               onClick={() => setShowModal(false)}
               disabled={submitting}
             >
-              Đóng
+              Hủy
             </Button>
             <Button variant="primary" type="submit" disabled={submitting}>
-              {isEditMode ? "Lưu thay đổi" : "Tạo khóa học"}
+              {isEditMode ? "Lưu" : "Thêm"}
             </Button>
           </Modal.Footer>
         </Form>

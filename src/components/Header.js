@@ -31,7 +31,7 @@ const Header = () => {
             {user && user.role === "STUDENT" && (
               <>
                 <Nav.Link as={Link} to="/courses">
-                  Khám phá Khóa học
+                  Khám phá khóa học
                 </Nav.Link>
                 {user && (
                   <Nav.Link as={Link} to="/my-courses">
@@ -43,13 +43,13 @@ const Header = () => {
 
             {user && user.role === "TEACHER" && (
               <Nav.Link as={Link} to="/teacher/courses">
-                Quản lý Giảng dạy
+                Quản lý khóa học
               </Nav.Link>
             )}
 
             {user && user.role === "ADMIN" && (
               <Nav.Link as={Link} to="/admin">
-                Trang Quản Trị
+                Trang quản trị
               </Nav.Link>
             )}
           </Nav>

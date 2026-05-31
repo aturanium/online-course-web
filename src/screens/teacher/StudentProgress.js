@@ -56,7 +56,7 @@ const StudentProgress = () => {
         className="mb-4"
         onClick={() => navigate(`/teacher/courses/${courseId}`)}
       >
-        <i className="fa-solid fa-arrow-left me-2"></i> Quay lại khóa học
+        Quay lại khóa học
       </Button>
 
       <Row className="g-4">
@@ -78,9 +78,7 @@ const StudentProgress = () => {
               bg={progress.status === "COMPLETED" ? "success" : "primary"}
               className="mb-3 px-3 py-2"
             >
-              {progress.status === "COMPLETED"
-                ? "Đã hoàn thành"
-                : "Đang học tập"}
+              {progress.status === "COMPLETED" ? "Đã hoàn thành" : "Đang học"}
             </Badge>
 
             <div className="d-flex justify-content-between border-top pt-3">
@@ -92,7 +90,7 @@ const StudentProgress = () => {
 
         <Col md={8}>
           <Card className="border-0 shadow-sm p-4 h-100">
-            <h4 className="fw-bold mb-4">Tiến độ khóa học</h4>
+            <h4 className="fw-bold mb-4">Tiến độ học tập</h4>
 
             <div className="mb-5">
               <div className="d-flex justify-content-between mb-2">

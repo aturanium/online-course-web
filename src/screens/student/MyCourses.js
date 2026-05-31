@@ -73,7 +73,7 @@ const MyCourses = () => {
 
         setSuggestedCourses(finalSuggestions.slice(0, 4));
       } catch (error) {
-        console.error("Lỗi lấy danh sách khóa học của tôi:", error);
+        console.error("Lỗi lấy danh sách khóa học:", error);
         Swal.fire("Lỗi", "Không thể tải danh sách khóa học", "error");
       } finally {
         setLoading(false);
@@ -88,28 +88,25 @@ const MyCourses = () => {
   return (
     <Container className="mt-4 mb-5" style={{ minHeight: "70vh" }}>
       <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h2 className="fw-bold mb-0">Không Gian Học Tập</h2>
-        <Badge bg="primary" className="fs-6 px-3 py-2">
-          Đang tham gia: {courses.length} khóa học
-        </Badge>
+        <h2 className="fw-bold mb-0">Khóa học đã tham gia</h2>
+        {courses.length > 0 && (
+          <Badge bg="primary" className="fs-6 px-3 py-2">
+            Đang tham gia {courses.length} khóa học
+          </Badge>
+        )}
       </div>
 
       {courses.length === 0 ? (
         <div className="text-center py-5 bg-light rounded-4 border">
           <i className="fa-solid fa-graduation-cap display-1 text-muted mb-3 opacity-25"></i>
-          <h4 className="text-secondary mb-3">
-            Bạn chưa tham gia khóa học nào
-          </h4>
-          <p className="text-muted mb-4">
-            Hãy bắt đầu hành trình học tập của bạn ngay hôm nay!
-          </p>
+          <h4 className="text-secondary mb-3">Chưa tham gia khóa học nào</h4>
+
           <Button
             variant="primary"
             size="lg"
             onClick={() => navigate("/courses")}
           >
-            <i className="fa-solid fa-magnifying-glass me-2"></i> Khám phá khóa
-            học
+            Khám phá khóa học
           </Button>
         </div>
       ) : (
@@ -144,11 +141,9 @@ const MyCourses = () => {
                   </Card.Title>
 
                   <Card.Text className="text-muted small mb-3">
-                    <i className="fa-solid fa-chalkboard-user me-2"></i>{" "}
                     {c.teacherName}
                     <span className="mx-2">|</span>
-                    <i className="fa-regular fa-clock me-1"></i> {c.duration}{" "}
-                    giờ
+                    {c.duration} giờ
                   </Card.Text>
 
                   <div className="mt-auto">
@@ -157,8 +152,7 @@ const MyCourses = () => {
                       className="w-100 fw-bold"
                       onClick={() => navigate(`/course/${c.id}`)}
                     >
-                      <i className="fa-solid fa-circle-play me-2"></i> Vào học
-                      ngay
+                      Xem
                     </Button>
                   </div>
                 </Card.Body>
@@ -169,7 +163,7 @@ const MyCourses = () => {
       )}
       {suggestedCourses.length > 0 && (
         <div className="mt-5 pt-4 border-top">
-          <h3 className="fw-bold mb-4">Gợi ý dành cho bạn</h3>
+          <h3 className="fw-bold mb-4">Gợi ý</h3>
           <Row className="g-4">
             {suggestedCourses.map((c) => (
               <Col md={3} sm={6} key={c.id}>
@@ -184,12 +178,11 @@ const MyCourses = () => {
                       {c.name}
                     </Card.Title>
                     <Card.Text className="text-muted small mb-2">
-                      <i className="fa-solid fa-chalkboard-user me-1"></i>{" "}
                       {c.teacherName}
                     </Card.Text>
                     <div className="mt-auto d-flex justify-content-between align-items-center">
                       <span className="text-danger fw-bold">
-                        {c.price?.toLocaleString()} đ
+                        {c.price?.toLocaleString()} VNĐ
                       </span>
                       <Button
                         variant="outline-primary"

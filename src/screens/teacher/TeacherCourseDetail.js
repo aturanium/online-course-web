@@ -84,11 +84,12 @@ const TeacherCourseDetail = () => {
 
   const handleDeleteLesson = async (lessonId) => {
     const confirm = await Swal.fire({
-      title: "Xóa bài học?",
-      text: "Dữ liệu bài học sẽ bị mất vĩnh viễn!",
+      title: "Xác nhận xóa?",
+      text: "Bài học sẽ bị xóa vĩnh viễn!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
     });
     if (confirm.isConfirmed) {
       try {
@@ -120,22 +121,22 @@ const TeacherCourseDetail = () => {
 
   const handleRemoveStudent = async (studentId) => {
     const confirm = await Swal.fire({
-      title: "Gỡ sinh viên?",
-      text: "Sinh viên này sẽ không thể truy cập khóa học nữa!",
+      title: "Xác nhận xóa?",
+      text: "Sinh viên sẽ bị xóa khỏi khóa học!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      confirmButtonText: "Đồng ý gỡ",
+      confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
     });
 
     if (confirm.isConfirmed) {
       try {
         await authApi().delete(endpoints["removeStudent"](id, studentId));
-        Swal.fire("Đã gỡ!", "Sinh viên đã bị loại khỏi khóa học.", "success");
+        Swal.fire("Đã xóa!", "Sinh viên đã bị xóa khỏi khóa học.", "success");
         fetchData();
       } catch (error) {
-        Swal.fire("Lỗi", "Không thể gỡ sinh viên này", "error");
+        Swal.fire("Lỗi", "Không thể xóa sinh viên này", "error");
       }
     }
   };
@@ -181,9 +182,7 @@ const TeacherCourseDetail = () => {
                 </div>
               </Col>
               <Col className="border-start">
-                <div className="small text-muted">
-                  Tổng doanh thu toàn thời gian
-                </div>
+                <div className="small text-muted">Tổng doanh thu</div>
                 <div className="fs-4 fw-bold text-success">
                   {stats.totalRevenue?.toLocaleString()} VNĐ
                 </div>
@@ -192,19 +191,16 @@ const TeacherCourseDetail = () => {
 
             <div className="mt-4 border rounded p-3 bg-white">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="fw-bold mb-0 text-secondary">
-                  <i className="fa-solid fa-chart-line me-2"></i> Phân tích
-                  doanh thu
-                </h6>
+                <h6 className="fw-bold mb-0 text-secondary">Doanh thu</h6>
                 <Form.Select
                   size="sm"
                   style={{ width: "150px" }}
                   value={revenueFilter}
                   onChange={(e) => setRevenueFilter(e.target.value)}
                 >
-                  <option value="MONTH">Theo Tháng</option>
-                  <option value="QUARTER">Theo Quý</option>
-                  <option value="YEAR">Theo Năm</option>
+                  <option value="MONTH">Theo tháng</option>
+                  <option value="QUARTER">Theo quý</option>
+                  <option value="YEAR">Theo năm</option>
                 </Form.Select>
               </div>
 
@@ -213,7 +209,7 @@ const TeacherCourseDetail = () => {
                   <thead className="table-light sticky-top">
                     <tr>
                       <th>Thời gian</th>
-                      <th className="text-end">Doanh thu (VNĐ)</th>
+                      <th className="text-end">Doanh thu</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -265,14 +261,15 @@ const TeacherCourseDetail = () => {
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="lessons">
-                  <i className="fa-solid fa-book-open me-2"></i>Bài học (
-                  {course.lessons?.length})
+                  Bài học{" "}
+                  {course.lessons?.length > 0
+                    ? `(${course.lessons.length})`
+                    : ""}
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="students">
-                  <i className="fa-solid fa-users me-2"></i>Sinh viên (
-                  {students.length})
+                  Sinh viên {students?.length > 0 ? `(${students.length})` : ""}
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -291,22 +288,20 @@ const TeacherCourseDetail = () => {
                       setShowLessonModal(true);
                     }}
                   >
-                    <i className="fa-solid fa-plus me-1"></i> Thêm bài học
+                    Thêm bài học
                   </Button>
                 </div>
                 <Table hover align="middle">
                   <thead>
                     <tr>
-                      <th style={{ width: "50px" }}>#</th>
                       <th>Tiêu đề</th>
-                      <th>Liên kết nội dung</th>
+                      <th>URL</th>
                       <th className="text-end">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
                     {course.lessons.map((l, index) => (
                       <tr key={index}>
-                        <td>{index + 1}</td>
                         <td className="fw-bold">{l.title}</td>
                         <td
                           className="text-muted small text-truncate"
@@ -353,18 +348,16 @@ const TeacherCourseDetail = () => {
                     size="sm"
                     onClick={() => setShowStudentModal(true)}
                   >
-                    <i className="fa-solid fa-user-plus me-1"></i> Thêm sinh
-                    viên
+                    Thêm sinh viên
                   </Button>
                 </div>
                 <Table hover align="middle">
                   <thead>
                     <tr>
-                      <th>Avatar</th>
-                      <th>Họ tên</th>
+                      <th>Sinh viên</th>
                       <th>Email</th>
                       <th>Tiến độ</th>
-                      <th className="text-end">Hành động</th>
+                      <th className="text-end">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -377,9 +370,7 @@ const TeacherCourseDetail = () => {
                             width="40"
                             height="40"
                             className="rounded-circle border"
-                          />
-                        </td>
-                        <td>
+                          />{" "}
                           {s.lastName} {s.firstName}
                         </td>
                         <td className="text-muted">{s.email}</td>
@@ -394,8 +385,9 @@ const TeacherCourseDetail = () => {
                         </td>
                         <td className="text-end">
                           <Button
-                            variant="link"
+                            variant="outline-primary"
                             className="text-primary me-2"
+                            size="sm"
                             onClick={() =>
                               navigate(
                                 `/teacher/courses/${id}/students/${s.id}`,
@@ -405,11 +397,12 @@ const TeacherCourseDetail = () => {
                             Chi tiết
                           </Button>
                           <Button
-                            variant="link"
-                            className="text-danger p-0"
+                            variant="outline-danger"
+                            size="sm"
+                            className="text-danger"
                             onClick={() => handleRemoveStudent(s.id)}
                           >
-                            Gỡ khỏi lớp
+                            Xóa
                           </Button>
                         </td>
                       </tr>
@@ -431,7 +424,7 @@ const TeacherCourseDetail = () => {
           </Modal.Header>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <Form.Label>Tiêu đề bài học</Form.Label>
+              <Form.Label>Tiêu đề</Form.Label>
               <Form.Control
                 type="text"
                 required
@@ -442,9 +435,7 @@ const TeacherCourseDetail = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>
-                URL Video/Tài liệu (Youtube, Google Drive, v.v.)
-              </Form.Label>
+              <Form.Label>URL</Form.Label>
               <Form.Control
                 type="url"
                 required
@@ -463,7 +454,7 @@ const TeacherCourseDetail = () => {
               Hủy
             </Button>
             <Button variant="primary" type="submit">
-              Lưu lại
+              Lưu
             </Button>
           </Modal.Footer>
         </Form>
@@ -480,13 +471,9 @@ const TeacherCourseDetail = () => {
               <Form.Control
                 type="email"
                 required
-                placeholder="sinhvien@example.com"
                 value={studentEmail}
                 onChange={(e) => setStudentEmail(e.target.value)}
               />
-              <Form.Text className="text-muted">
-                Sinh viên phải có tài khoản trên hệ thống.
-              </Form.Text>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
@@ -494,10 +481,10 @@ const TeacherCourseDetail = () => {
               variant="secondary"
               onClick={() => setShowStudentModal(false)}
             >
-              Đóng
+              Hủy
             </Button>
             <Button variant="success" type="submit">
-              Xác nhận thêm
+              Thêm
             </Button>
           </Modal.Footer>
         </Form>

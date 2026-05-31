@@ -57,22 +57,18 @@ const AdminCourses = () => {
 
   const handleApprove = async (id, courseName) => {
     const confirm = await Swal.fire({
-      title: "Duyệt khóa học?",
-      text: `Bạn chuẩn bị cấp phép xuất bản khóa học: "${courseName}"`,
+      title: "Xác nhận duyệt?",
+      text: `Bạn đang duyệt khóa học ${courseName}`,
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Đồng ý Duyệt",
+      confirmButtonText: "Duyệt",
       cancelButtonText: "Hủy",
     });
 
     if (confirm.isConfirmed) {
       try {
         await authApi().patch(endpoints["approveCourse"](id));
-        Swal.fire(
-          "Thành công",
-          "Khóa học đã được đưa lên hệ thống!",
-          "success",
-        );
+        Swal.fire("Thành công", "Khóa học đã được duyệt!", "success");
         fetchData();
       } catch (error) {
         Swal.fire("Lỗi", "Không thể duyệt khóa học này", "error");
@@ -82,19 +78,19 @@ const AdminCourses = () => {
 
   const handleDelete = async (id, courseName) => {
     const confirm = await Swal.fire({
-      title: "Xóa khóa học?",
-      text: `Bạn có chắc muốn xóa khóa học: "${courseName}" khỏi hệ thống?`,
+      title: "Xác nhận xóa?",
+      text: `Khóa học ${courseName} sẽ bị xóa vĩnh viễn!`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      confirmButtonText: "Xóa vĩnh viễn",
+      confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
     });
 
     if (confirm.isConfirmed) {
       try {
         await authApi().delete(endpoints["deleteCourse"](id));
-        Swal.fire("Đã xóa", "Khóa học đã bị loại bỏ.", "success");
+        Swal.fire("Đã xóa", "success");
         fetchData();
       } catch (error) {
         Swal.fire("Lỗi", "Không thể xóa khóa học này", "error");
@@ -120,11 +116,7 @@ const AdminCourses = () => {
       setEditingCatId(null);
       fetchData();
     } catch (error) {
-      Swal.fire(
-        "Lỗi",
-        error.response?.data || "Không thể lưu chủ đề lúc này",
-        "error",
-      );
+      Swal.fire("Lỗi", error.response?.data || "Không thể lưu chủ đề", "error");
     }
   };
 
@@ -142,25 +134,22 @@ const AdminCourses = () => {
 
   const handleDeleteCategory = async (id, name) => {
     const confirm = await Swal.fire({
-      title: "Xóa chủ đề?",
-      text: `Bạn có chắc muốn xóa chủ đề "${name}"?`,
+      title: "Xác nhận xóa chủ đề?",
+      text: `Chủ đề ${name} sẽ bị xóa vĩnh viễn!`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
     });
 
     if (confirm.isConfirmed) {
       try {
         await authApi().delete(endpoints["categoryAction"](id));
-        Swal.fire("Đã xóa", "Chủ đề đã bị xóa.", "success");
+        Swal.fire("Đã xóa chủ đề", "success");
         fetchData();
       } catch (error) {
-        Swal.fire(
-          "Lỗi",
-          "Không thể xóa (có thể do đã có khóa học thuộc chủ đề này)",
-          "error",
-        );
+        Swal.fire("Lỗi", "Không thể xóa", "error");
       }
     }
   };
@@ -173,14 +162,16 @@ const AdminCourses = () => {
     <Container className="mt-4 mb-5" style={{ minHeight: "70vh" }}>
       <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <div>
-          <h2 className="fw-bold mb-1">Quản Trị Nội Dung</h2>
+          <h2 className="fw-bold mb-1">Quản lý khóa học</h2>
           <p className="text-muted mb-0">
-            Quản lý khóa học và danh mục hệ thống
+            Quản lý khóa học và danh mục khóa học
           </p>
         </div>
-        <Badge bg="danger" className="fs-6 px-3 py-2">
-          {pendingCount} khóa học chờ duyệt
-        </Badge>
+        {pendingCount > 0 && (
+          <Badge bg="danger" className="fs-6 px-3 py-2">
+            Có {pendingCount} khóa học đang chờ duyệt
+          </Badge>
+        )}
       </div>
 
       <Tab.Container defaultActiveKey="courses">
@@ -189,12 +180,12 @@ const AdminCourses = () => {
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="courses" className="fw-bold">
-                  <i className="fa-solid fa-photo-film me-2"></i> Khóa học
+                  Khóa học
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="categories" className="fw-bold">
-                  <i className="fa-solid fa-layer-group me-2"></i> Chủ đề
+                  Danh mục
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -209,7 +200,7 @@ const AdminCourses = () => {
                         <th className="py-3">Khóa học</th>
                         <th className="py-3">Giảng viên</th>
                         <th className="py-3">Trạng thái</th>
-                        <th className="py-3 text-end pe-4">Kiểm duyệt</th>
+                        <th className="py-3 text-end pe-4">Thao tác</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -250,7 +241,6 @@ const AdminCourses = () => {
                             </td>
                             <td>
                               <div className="fw-medium text-primary">
-                                <i className="fa-solid fa-chalkboard-user me-1"></i>{" "}
                                 {c.teacherName}
                               </div>
                             </td>
@@ -306,9 +296,9 @@ const AdminCourses = () => {
 
               <Tab.Pane eventKey="categories" className="p-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                  <h5 className="fw-bold mb-0">Danh sách Chủ đề</h5>
+                  <h5 className="fw-bold mb-0">Danh sách danh mục</h5>
                   <Button variant="primary" onClick={openAddModal}>
-                    <i className="fa-solid fa-plus me-2"></i>Thêm chủ đề
+                    Thêm danh mục
                   </Button>
                 </div>
 
@@ -352,14 +342,12 @@ const AdminCourses = () => {
         <Form onSubmit={handleSubmitCategory}>
           <Modal.Header closeButton>
             <Modal.Title>
-              {editingCatId ? "Cập nhật chủ đề" : "Thêm chủ đề mới"}
+              {editingCatId ? "Sửa danh mục" : "Thêm danh mục mới"}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group>
-              <Form.Label>
-                Tên chủ đề <span className="text-danger">*</span>
-              </Form.Label>
+              <Form.Label>Tên danh mục</Form.Label>
               <Form.Control
                 type="text"
                 required
@@ -379,7 +367,7 @@ const AdminCourses = () => {
               Hủy
             </Button>
             <Button variant="primary" type="submit">
-              {editingCatId ? "Cập nhật" : "Lưu lại"}
+              {editingCatId ? "Lưu" : "Thêm"}
             </Button>
           </Modal.Footer>
         </Form>

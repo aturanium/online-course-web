@@ -24,7 +24,7 @@ const Courses = () => {
   const sortByPrice = searchParams.get("sortByPrice") || "";
   const sortByName = searchParams.get("sortByName") || "";
 
-  const page = parseInt(searchParams.get("page"));
+  const page = parseInt(searchParams.get("page")) || 1;
 
   const [searchInput, setSearchInput] = useState(kw);
 
@@ -95,18 +95,13 @@ const Courses = () => {
         timer: 1500,
       });
     } catch (error) {
-      Swal.fire(
-        "Thông báo",
-        error.response?.data ||
-          "Khóa học này đã có trong giỏ hàng hoặc có lỗi xảy ra!",
-        "info",
-      );
+      Swal.fire("Thông báo", error.response?.data || "Có lỗi xảy ra!", "info");
     }
   };
 
   return (
     <Container className="mt-4 mb-5">
-      <h2 className="fw-bold mb-4">Khám phá Khóa học</h2>
+      <h2 className="fw-bold mb-4">Khám phá khóa học</h2>
 
       <Card className="border-0 shadow-sm mb-4 p-3 bg-light">
         <Row className="g-3">
@@ -121,7 +116,7 @@ const Courses = () => {
                   placeholder="Nhập tên khóa học hoặc giảng viên..."
                 />
                 <Button variant="primary" type="submit">
-                  <i className="fa-solid fa-magnifying-glass me-2"></i>Tìm kiếm
+                  Tìm kiếm
                 </Button>
               </InputGroup>
             </Form>
@@ -154,7 +149,6 @@ const Courses = () => {
         <>
           {courses.length === 0 ? (
             <div className="text-center mt-5 text-muted">
-              <i className="fa-solid fa-box-open display-1 opacity-25 mb-3"></i>
               {page > 1 ? (
                 <>
                   <h4>Bạn đã xem hết danh sách khóa học!</h4>
@@ -163,8 +157,7 @@ const Courses = () => {
                     className="mt-3 px-4"
                     onClick={() => handlePageChange(page - 1)}
                   >
-                    <i className="fa-solid fa-arrow-left me-2"></i> Quay lại
-                    trang trước
+                    Quay lại trang trước
                   </Button>
                 </>
               ) : (
@@ -192,7 +185,7 @@ const Courses = () => {
                       <Card.Body className="d-flex flex-column">
                         <div className="mb-2">
                           <Badge bg="info" className="me-2">
-                            Thời lượng: {c.duration} giờ
+                            {c.duration} giờ
                           </Badge>
                         </div>
 
@@ -204,8 +197,7 @@ const Courses = () => {
                         </Card.Title>
 
                         <Card.Text className="text-muted small mb-3">
-                          <i className="fa-solid fa-chalkboard-user me-2"></i>
-                          Giảng viên: {c.teacherName}
+                          {c.teacherName}
                         </Card.Text>
 
                         <div className="mt-auto">
@@ -217,14 +209,13 @@ const Courses = () => {
                               variant="outline-primary"
                               onClick={() => navigate(`/course/${c.id}`)}
                             >
-                              Xem chi tiết
+                              Chi tiết
                             </Button>
                             <Button
                               variant="primary"
                               onClick={() => addToCart(c)}
                             >
-                              <i className="fa-solid fa-cart-plus me-2"></i>Thêm
-                              vào giỏ
+                              Thêm vào giỏ
                             </Button>
                           </div>
                         </div>
@@ -241,7 +232,7 @@ const Courses = () => {
                   onClick={() => handlePageChange(page - 1)}
                   className="px-4"
                 >
-                  <i className="fa-solid fa-chevron-left me-2"></i> Trang trước
+                  Trang trước
                 </Button>
 
                 <span className="mx-4 fw-bold align-self-center fs-5 text-primary">
@@ -254,7 +245,7 @@ const Courses = () => {
                   onClick={() => handlePageChange(page + 1)}
                   className="px-4"
                 >
-                  Trang sau <i className="fa-solid fa-chevron-right ms-2"></i>
+                  Trang sau
                 </Button>
               </div>
             </>

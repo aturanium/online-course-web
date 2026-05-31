@@ -44,7 +44,7 @@ const AdminUsers = () => {
       const res = await authApi().get(endpoints["adminUsers"]);
       setUsers(res.data);
     } catch (error) {
-      Swal.fire("Lỗi", "Không thể tải danh sách người dùng", "error");
+      Swal.fire("Lỗi", "Không thể tải dữ liệu", "error");
     } finally {
       setLoading(false);
     }
@@ -120,11 +120,12 @@ const AdminUsers = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
     });
     if (confirm.isConfirmed) {
       try {
         await authApi().delete(endpoints["adminUserAction"](id));
-        Swal.fire("Đã xóa", "", "success");
+        Swal.fire("Đã xóa", "success");
         fetchUsers();
       } catch (error) {
         Swal.fire("Lỗi", "Không thể xóa", "error");
@@ -135,7 +136,7 @@ const AdminUsers = () => {
   const handleVerify = async (id) => {
     try {
       await authApi().patch(endpoints["verifyTeacher"](id));
-      Swal.fire("Thành công", "Đã xác minh Giảng viên", "success");
+      Swal.fire("Thành công", "Đã xác minh giảng viên", "success");
       fetchUsers();
     } catch (error) {
       Swal.fire("Lỗi", "Không thể xác minh", "error");
@@ -163,7 +164,7 @@ const AdminUsers = () => {
       <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <h2 className="fw-bold">Quản lý Người dùng</h2>
         <Button variant="primary" onClick={handleShowAdd}>
-          <i className="fa-solid fa-user-plus me-2"></i> Thêm tài khoản
+          Thêm tài khoản
         </Button>
       </div>
 
@@ -216,13 +217,10 @@ const AdminUsers = () => {
                 <td>
                   {u.role === "TEACHER" &&
                     (u.isVerified ? (
-                      <Badge bg="success">
-                        <i className="fa-solid fa-check-circle me-1"></i>Đã xác
-                        minh
-                      </Badge>
+                      <Badge bg="success">Đã xác minh</Badge>
                     ) : (
                       <Badge bg="warning" text="dark">
-                        <i className="fa-solid fa-clock me-1"></i>Chưa xác minh
+                        Chưa xác minh
                       </Badge>
                     ))}
                 </td>
@@ -274,7 +272,7 @@ const AdminUsers = () => {
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>
-              {isEdit ? "Cập nhật người dùng" : "Thêm người dùng mới"}
+              {isEdit ? "Cập nhật thông tin người dùng" : "Thêm người dùng mới"}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -355,7 +353,7 @@ const AdminUsers = () => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" type="submit">
-              Lưu lại
+              Lưu
             </Button>
           </Modal.Footer>
         </Form>

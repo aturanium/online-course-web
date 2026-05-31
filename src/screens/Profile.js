@@ -158,7 +158,6 @@ const Profile = () => {
                         <th>Giảng viên</th>
                         <th>Giá</th>
                         <th>Phương thức</th>
-                        <th>Trạng thái</th>
                         <th>Ngày</th>
                       </tr>
                     </thead>
@@ -179,13 +178,6 @@ const Profile = () => {
                             <td>{item.teacherName}</td>
                             <td>{item.price.toLocaleString()}đ</td>
                             <td>{t.paymentMethod}</td>
-                            <td>
-                              <span
-                                className={`badge ${t.status === "SUCCESS" ? "bg-success" : "bg-warning"}`}
-                              >
-                                {t.status}
-                              </span>
-                            </td>
                             <td>{t.paymentDate}</td>
                           </tr>
                         )),
@@ -238,7 +230,7 @@ const Profile = () => {
               />
             </Form.Group>
             <Button variant="primary" type="submit" disabled={loading}>
-              Lưu thay đổi
+              Lưu
             </Button>
           </Form>
         </Modal.Body>
@@ -284,7 +276,7 @@ const Profile = () => {
               />
             </Form.Group>
             <Button variant="danger" type="submit" disabled={loading}>
-              Cập nhật mật khẩu
+              Đổi
             </Button>
           </Form>
         </Modal.Body>

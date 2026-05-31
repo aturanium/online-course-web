@@ -16,10 +16,8 @@ const Admin = () => {
   return (
     <Container className="mt-5 mb-5" style={{ minHeight: "70vh" }}>
       <div className="text-center mb-5">
-        <h1 className="fw-bold text-primary">TỔNG HÀNH DINH ADMIN</h1>
-        <p className="text-muted fs-5">
-          Hệ thống quản trị trung tâm của Nền tảng học trực tuyến
-        </p>
+        <h1 className="fw-bold text-primary">TRANG QUẢN LÝ</h1>
+        <p className="text-muted fs-5">Hệ thống khóa học trực tuyến</p>
       </div>
 
       <Row className="g-4 justify-content-center">
@@ -36,15 +34,12 @@ const Admin = () => {
             }
           >
             <Card.Body>
-              <div className="mb-3">
-                <i className="fa-solid fa-users-gear display-1 text-primary"></i>
-              </div>
+              <div className="mb-3"></div>
               <Card.Title className="fw-bold fs-4">
                 Quản lý người dùng
               </Card.Title>
               <Card.Text className="text-muted">
-                Duyệt giảng viên, phân quyền, quản lý tài khoản và reset mật
-                khẩu.
+                Thông tin tài khoản người dùng hệ thống
               </Card.Text>
             </Card.Body>
           </Card>
@@ -63,13 +58,10 @@ const Admin = () => {
             }
           >
             <Card.Body>
-              <div className="mb-3">
-                <i className="fa-solid fa-photo-film display-1 text-success"></i>
-              </div>
+              <div className="mb-3"></div>
               <Card.Title className="fw-bold fs-4">Quản lý khóa học</Card.Title>
               <Card.Text className="text-muted">
-                Duyệt xuất bản khóa học mới, thêm chủ đề (Category), xóa nội
-                dung rác.
+                Thông tin khóa học và danh mục
               </Card.Text>
             </Card.Body>
           </Card>
@@ -88,13 +80,10 @@ const Admin = () => {
             }
           >
             <Card.Body>
-              <div className="mb-3">
-                <i className="fa-solid fa-chart-pie display-1 text-warning"></i>
-              </div>
-              <Card.Title className="fw-bold fs-4">Báo cáo Thống kê</Card.Title>
+              <div className="mb-3"></div>
+              <Card.Title className="fw-bold fs-4">Thống kê</Card.Title>
               <Card.Text className="text-muted">
-                Theo dõi tổng doanh thu, tần suất đăng ký và hiệu suất từng khóa
-                học.
+                Thông tin thống kê hệ thống
               </Card.Text>
             </Card.Body>
           </Card>

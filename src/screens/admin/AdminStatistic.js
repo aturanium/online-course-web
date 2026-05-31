@@ -24,7 +24,7 @@ const AdminStatistic = () => {
       setOverview(overviewRes.data);
       setCourseStats(coursesRes.data);
     } catch (error) {
-      Swal.fire("Lỗi", "Không thể tải dữ liệu thống kê", "error");
+      Swal.fire("Lỗi", "Không thể tải dữ liệu", "error");
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,7 @@ const AdminStatistic = () => {
 
   return (
     <Container className="mt-4 mb-5">
-      <h2 className="fw-bold mb-4 border-bottom pb-3">Báo cáo Thống kê</h2>
+      <h2 className="fw-bold mb-4 border-bottom pb-3">Thống kê hệ thống</h2>
 
       <Row className="g-4 mb-5">
         <Col md={4}>
@@ -55,7 +55,6 @@ const AdminStatistic = () => {
                     {overview.totalActiveCourses}
                   </div>
                 </div>
-                <i className="fa-solid fa-book-open display-3 opacity-50"></i>
               </div>
             </Card.Body>
           </Card>
@@ -70,7 +69,6 @@ const AdminStatistic = () => {
                     {overview.totalStudents}
                   </div>
                 </div>
-                <i className="fa-solid fa-users display-3 opacity-50"></i>
               </div>
             </Card.Body>
           </Card>
@@ -85,7 +83,6 @@ const AdminStatistic = () => {
                     {overview.totalRevenue?.toLocaleString()} đ
                   </div>
                 </div>
-                <i className="fa-solid fa-sack-dollar display-3 opacity-50"></i>
               </div>
             </Card.Body>
           </Card>
@@ -100,7 +97,7 @@ const AdminStatistic = () => {
           <Table hover className="mb-0">
             <thead className="table-light">
               <tr>
-                <th className="ps-4 py-3">Tên khóa học</th>
+                <th className="ps-4 py-3">Khóa học</th>
                 <th className="py-3">Giảng viên</th>
                 <th className="py-3 text-center">Số sinh viên tham gia</th>
                 <th className="py-3 text-center">Tần suất đăng ký</th>

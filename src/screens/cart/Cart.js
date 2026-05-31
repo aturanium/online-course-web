@@ -50,11 +50,11 @@ const Cart = () => {
 
   const handleRemoveItem = async (courseId) => {
     const confirm = await Swal.fire({
-      title: "Xóa khỏi giỏ?",
+      title: "Xác nhận xóa?",
       text: "Bạn có chắc muốn bỏ khóa học này ra khỏi giỏ hàng?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Đồng ý",
+      confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
     });
 
@@ -74,49 +74,42 @@ const Cart = () => {
     try {
       setProcessing(true);
 
+      localStorage.setItem("pendingMethod", paymentMethod);
+
       const createRes = await authApi().post(endpoints["createPayment"], {
         paymentMethod: paymentMethod,
       });
-      const transactionId = createRes.data.transactionId;
 
-      Swal.fire({
-        title: "Đang xử lý thanh toán...",
-        text: `Đang kết nối đến cổng ${paymentMethod}`,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+      const data =
+        typeof createRes.data === "string"
+          ? JSON.parse(createRes.data)
+          : createRes.data;
+      const { checkoutUrl, isFree } = data;
 
-      setTimeout(async () => {
-        try {
-          const updateRes = await authApi().patch(
-            endpoints["updatePayment"](transactionId),
-            {
-              status: "SUCCESS",
-            },
-          );
+      if (isFree) {
+        Swal.fire({
+          icon: "success",
+          title: "Đăng ký thành công!",
+          text: "Khóa học này miễn phí!",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/my-courses");
+        });
+        return;
+      }
 
-          Swal.fire({
-            icon: "success",
-            title: "Thanh toán thành công!",
-            text: updateRes.data,
-            confirmButtonText: "Đến trang Khóa học của tôi",
-          }).then(() => {
-            navigate("/my-courses");
-          });
-        } catch (updateErr) {
-          Swal.fire(
-            "Lỗi thanh toán",
-            "Có lỗi xảy ra khi xác nhận giao dịch.",
-            "error",
-          );
-        } finally {
-          setProcessing(false);
-        }
-      }, 2000);
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        Swal.fire(
+          "Lỗi",
+          "Không nhận được đường dẫn thanh toán từ Server",
+          "error",
+        );
+        setProcessing(false);
+      }
     } catch (error) {
-      Swal.fire("Lỗi", "Không thể khởi tạo giao dịch lúc này", "error");
+      Swal.fire("Lỗi", "Khởi tạo giao dịch thất bại", "error");
       setProcessing(false);
     }
   };
@@ -133,14 +126,13 @@ const Cart = () => {
             <Card.Body className="p-0">
               {cartItems.length === 0 ? (
                 <div className="text-center py-5">
-                  <i className="fa-solid fa-cart-arrow-down display-1 opacity-25 mb-3"></i>
                   <h5>Giỏ hàng của bạn đang trống!</h5>
                   <Button
                     variant="outline-primary"
                     className="mt-3"
                     onClick={() => navigate("/courses")}
                   >
-                    Khám phá khóa học ngay
+                    Khám phá khóa học
                   </Button>
                 </div>
               ) : (
@@ -168,7 +160,6 @@ const Cart = () => {
                             {item.courseName}
                           </h5>
                           <div className="text-muted small">
-                            <i className="fa-solid fa-chalkboard-user me-2"></i>
                             {item.teacherName}
                           </div>
                         </Col>
@@ -222,37 +213,30 @@ const Cart = () => {
                   disabled={cartItems.length === 0 || processing}
                 >
                   <option value="PAYPAL">PayPal</option>
-                  <option value="STRIPE">Stripe</option>
+                  <option value="VNPAY">VNPay</option>
                   <option value="MOMO">MoMo</option>
                   <option value="ZALOPAY">ZaloPay</option>
                 </Form.Select>
               </Form.Group>
 
               <div className="d-grid">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  disabled={cartItems.length === 0 || processing}
-                  onClick={handleCheckout}
-                >
-                  {processing ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        size="sm"
-                        animation="border"
-                        className="me-2"
-                      />{" "}
-                      Đang xử lý...
-                    </>
-                  ) : (
-                    "Thanh toán ngay"
-                  )}
-                </Button>
-              </div>
-              <div className="text-center mt-3 text-muted small">
-                <i className="fa-solid fa-shield-halved me-1"></i> Thanh toán
-                bảo mật an toàn 100%
+                {processing ? (
+                  <Spinner
+                    as="span"
+                    size="sm"
+                    animation="border"
+                    className="me-2"
+                  />
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    disabled={cartItems.length === 0 || processing}
+                    onClick={handleCheckout}
+                  >
+                    Thanh toán
+                  </Button>
+                )}
               </div>
             </Card.Body>
           </Card>
