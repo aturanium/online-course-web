@@ -214,6 +214,7 @@ const Cart = () => {
                 >
                   <option value="PAYPAL">PayPal</option>
                   <option value="VNPAY">VNPay</option>
+                  <option value="STRIPE">Stripe</option>
                   <option value="MOMO">MoMo</option>
                   <option value="ZALOPAY">ZaloPay</option>
                 </Form.Select>
