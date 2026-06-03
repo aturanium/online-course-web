@@ -15,17 +15,45 @@ const PaymentResult = () => {
     hasProcessed.current = true;
 
     const processPayment = async () => {
-      const method = localStorage.getItem("pendingMethod") || "VNPAY";
-      const vnp_ResponseCode = (
-        searchParams.get("vnp_ResponseCode") || ""
-      ).trim();
-      const vnp_TransactionNo = searchParams.get("vnp_TransactionNo");
-      const paymentId = searchParams.get("paymentId");
-      const statusParam = (searchParams.get("status") || "").trim();
-      const isSuccess =
-        vnp_ResponseCode === "00" || (statusParam === "success" && paymentId);
-      const gatewayTxnId =
-        vnp_TransactionNo || paymentId || "TXN-" + Date.now();
+      const method = localStorage.getItem("pendingMethod");
+
+      if (!method) {
+        navigate("/cart");
+        return;
+      }
+
+      let isSuccess = false;
+      let gatewayTxnId = "";
+
+      switch (method) {
+        case "VNPAY":
+          isSuccess = searchParams.get("vnp_ResponseCode") === "00";
+          gatewayTxnId = searchParams.get("vnp_TransactionNo");
+          break;
+
+        case "MOMO":
+          isSuccess = searchParams.get("resultCode") === "0";
+          gatewayTxnId =
+            searchParams.get("transId") || searchParams.get("orderId");
+          break;
+
+        case "ZALOPAY":
+          isSuccess = searchParams.get("status") === "1";
+          gatewayTxnId = searchParams.get("apptransid");
+          break;
+
+        case "STRIPE":
+        case "PAYPAL":
+        default:
+          isSuccess = searchParams.get("status") === "success";
+          gatewayTxnId =
+            searchParams.get("paymentId") || searchParams.get("session_id");
+          break;
+      }
+
+      if (!gatewayTxnId) {
+        gatewayTxnId = "TXN-" + Date.now();
+      }
 
       try {
         if (isSuccess) {
@@ -40,7 +68,11 @@ const PaymentResult = () => {
           );
           navigate("/my-courses");
         } else {
-          Swal.fire("Thất bại", "Thanh toán không thành công.", "error");
+          Swal.fire(
+            "Thất bại",
+            "Giao dịch đã bị hủy hoặc không thành công.",
+            "error",
+          );
           navigate("/cart");
         }
       } catch (error) {
